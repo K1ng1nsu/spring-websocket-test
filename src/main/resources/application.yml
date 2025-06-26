@@ -12,3 +12,9 @@ spring:
         dialect: org.hibernate.dialect.PostgreSQLDialect
       show-sql: true
       format-sql: true
+
+
+logging:
+  level:
+    root: INFO
+    com.example.chattestapp: DEBUG
