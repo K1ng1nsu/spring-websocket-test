@@ -3,17 +3,109 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="style.css" />
     <title>STOMP.js Test</title>
   </head>
   <body>
-    <input id="input" type="text" />
-    <button id="button">전송</button>
+    <div class="chat-wrapper">
+      <div class="chat-messages">
+        <div class="message sender">
+          <p>
+            안녕하세요! 오늘 날씨가 좋네요.
+            DSLAKDL:ASKDKLA:KD:LSKLD:AKSDKAS:DKL:AL:D
+            AL:DK:SKDL:ASK:LKASL:DKAL:DKL:A dkalskdlasklmclxzm,z.mc,.zmc,.m,.c
+          </p>
+          <span class="timestamp">오전 10:00</span>
+        </div>
+
+        <div class="message receiver">
+          <p>네, 정말 맑고 따뜻해요!</p>
+          <span class="timestamp">오전 10:01</span>
+        </div>
+
+        <div class="message sender">
+          <p>점심은 드셨어요?</p>
+          <span class="timestamp">오전 12:30</span>
+        </div>
+
+        <div class="message receiver">
+          <p>네, 막 먹었어요. 맛있는 거 드세요!</p>
+          <span class="timestamp">오전 12:35</span>
+        </div>
+        <div class="message sender">
+          <p>안녕하세요! 오늘 날씨가 좋네요.</p>
+          <span class="timestamp">오전 10:00</span>
+        </div>
+
+        <div class="message receiver">
+          <p>네, 정말 맑고 따뜻해요!</p>
+          <span class="timestamp">오전 10:01</span>
+        </div>
+
+        <div class="message sender">
+          <p>점심은 드셨어요?</p>
+          <span class="timestamp">오전 12:30</span>
+        </div>
+
+        <div class="message receiver">
+          <p>네, 막 먹었어요. 맛있는 거 드세요!</p>
+          <span class="timestamp">오전 12:35</span>
+        </div>
+        <div class="message sender">
+          <p>안녕하세요! 오늘 날씨가 좋네요.</p>
+          <span class="timestamp">오전 10:00</span>
+        </div>
+
+        <div class="message receiver">
+          <p>네, 정말 맑고 따뜻해요!</p>
+          <span class="timestamp">오전 10:01</span>
+        </div>
+
+        <div class="message sender">
+          <p>점심은 드셨어요?</p>
+          <span class="timestamp">오전 12:30</span>
+        </div>
+
+        <div class="message receiver">
+          <p>네, 막 먹었어요. 맛있는 거 드세요!</p>
+          <span class="timestamp">오전 12:35</span>
+        </div>
+      </div>
+
+      <div class="message-input-area">
+        <textarea
+          id="message-input"
+          placeholder="메시지를 입력하세요..."
+        ></textarea>
+        <div id="message-input-buttons">
+          <!-- <button id="send-button">+</button> -->
+          <button id="send-button">-></button>
+        </div>
+      </div>
+    </div>
   </body>
   <script src="https://cdn.jsdelivr.net/npm/sockjs-client@1/dist/sockjs.min.js"></script>
 
   <script src="https://cdn.jsdelivr.net/npm/@stomp/stompjs@7.0.0/bundles/stomp.umd.min.js"></script>
 
   <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      const textarea = document.getElementById('message-input');
+      const minHeight = textarea.scrollHeight; // 초기 최소 높이
+
+      textarea.addEventListener('input', function () {
+        // 스크롤 높이를 기반으로 높이 자동 조절
+        this.style.height = 'auto'; // 일단 높이를 초기화해서 정확한 scrollHeight를 얻음
+        this.style.height = this.scrollHeight + 'px';
+
+        // max-height를 초과하면 스크롤 바가 나타나도록
+        // CSS에서 max-height를 설정해 둔 경우 자동으로 작동합니다.
+      });
+
+      // 페이지 로드 시 또는 초기 메시지 입력 시 높이 조정 (혹시 초기 텍스트가 있다면)
+      textarea.style.height = textarea.scrollHeight + 'px';
+    });
+
     console.log('Main script loaded and running.'); // 이 로그가 찍히는지 확인
 
     // UMD 번들은 전역 'Stomp' 객체를 노출합니다.
@@ -22,7 +114,7 @@
 
     const headers = {
       Authorization:
-        'Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1c2VyIiwiZXhwIjoxNzUwOTM1NzMzLCJpYXQiOjE3NTA5MzIxMzN9.5w04E4tIl4HlkKzimygdogA3eMjBiCou-HhIEpkuqgs',
+        'Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1c2VyMTIzMTIzIiwiZXhwIjoxNzUxMDA5NjMwLCJpYXQiOjE3NTEwMDYwMzB9.UEiNIfKkp70nU7LdX91_pbX6ZoQRJNd0DZc3X-m0lRE',
     };
 
     // Stomp.Client 사용 (전역 Stomp 객체에 접근)
@@ -51,13 +143,14 @@
 
     stompClient.activate();
 
-    const inputEl = document.getElementById('input');
-    const buttonEl = document.getElementById('button');
+    const inputEl = document.getElementById('message-input');
+    const buttonEl = document.getElementById('send-button');
 
     buttonEl.addEventListener('click', () => {
       const messageObject = {
         sender: '홍길동',
-        message: '안녕하세요!',
+        message: inputEl.value,
+        type: 'MESSAGE',
       };
 
       // 메시지 전송

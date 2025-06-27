@@ -1,5 +1,6 @@
 package com.example.chattestapp.controller;
 
+import com.example.chattestapp.dto.ChatRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.handler.annotation.MessageMapping;
@@ -13,9 +14,12 @@ public class ChatController {
 
 
     @MessageMapping("/send/message")
-    public void sendMessage() {
+    public void sendMessage(ChatRequest chatRequest) {
         System.out.println("here i am");
-        sendingOperations.convertAndSend("/sub/chat/room/test", "테스트 연결");
+        System.out.println(chatRequest);
+        sendingOperations.convertAndSend("/sub/chat/room/test",chatRequest);
+        //  HtmlUtils.htmlEscape(chRequest.get)
+        // import org.springframework.web.util.HtmlUtils;
     }
 
 }

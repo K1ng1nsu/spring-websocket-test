@@ -20,7 +20,7 @@ public class AuthController {
     @GetMapping("/signup")
     public ResponseEntity<?> signup() {
         SignupRequest signupRequest = new SignupRequest();
-        signupRequest.setUsername("user");
+        signupRequest.setUsername("user123123");
         signupRequest.setPassword("user");
 
         return ResponseEntity.status(HttpStatus.CREATED).body(authService.createUser(signupRequest));
@@ -28,6 +28,6 @@ public class AuthController {
 
     @GetMapping("/login")
     public ResponseEntity<?> login() {
-        return ResponseEntity.status(HttpStatus.OK).body(authService.login(new LoginRequest("user", "user")));
+        return ResponseEntity.status(HttpStatus.OK).body(authService.login(new LoginRequest("user123123", "user")));
     }
 }
