@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>STOMP.js Test</title>
+  </head>
+  <body>
+    <input id="input" type="text" />
+    <button id="button">전송</button>
+  </body>
+  <script src="https://cdn.jsdelivr.net/npm/sockjs-client@1/dist/sockjs.min.js"></script>
+
+  <script src="https://cdn.jsdelivr.net/npm/@stomp/stompjs@7.0.0/bundles/stomp.umd.min.js"></script>
+
+  <script>
+    console.log('Main script loaded and running.'); // 이 로그가 찍히는지 확인
+
+    // UMD 번들은 전역 'Stomp' 객체를 노출합니다.
+    // 따라서 import { Client } from '...' 구문이 필요 없습니다.
+    const BROKER_URL = 'http://localhost:8080/chat';
+
+    const headers = {
+      Authorization:
+        'Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1c2VyIiwiZXhwIjoxNzUwOTM1NzMzLCJpYXQiOjE3NTA5MzIxMzN9.5w04E4tIl4HlkKzimygdogA3eMjBiCou-HhIEpkuqgs',
+    };
+
+    // Stomp.Client 사용 (전역 Stomp 객체에 접근)
+    const stompClient = new StompJs.Client({
+      webSocketFactory: () => new SockJS(BROKER_URL),
+      connectHeaders: headers,
+      onConnect: (frame) => {
+        console.log('STOMP Connected:', frame);
+        stompClient.subscribe('/sub/chat/room/test', (message) => {
+          console.log('구독테스트');
+
+          console.log(message);
+
+          console.log(message.body);
+        });
+      },
+      onStompError: (frame) => {
+        console.error('STOMP Error:', frame.headers['message']);
+        console.error('Details:', frame.body);
+      },
+      debug: (str) => {
+        console.log('STOMP Debug:', str);
+      },
+      reconnectDelay: 5000,
+    });
+
+    stompClient.activate();
+
+    const inputEl = document.getElementById('input');
+    const buttonEl = document.getElementById('button');
+
+    buttonEl.addEventListener('click', () => {
+      const messageObject = {
+        sender: '홍길동',
+        message: '안녕하세요!',
+      };
+
+      // 메시지 전송
+      stompClient.publish({
+        destination: '/pub/send/message',
+        body: JSON.stringify(messageObject),
+      });
+    });
+  </script>
+</html>
